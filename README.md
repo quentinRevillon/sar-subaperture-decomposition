@@ -43,8 +43,8 @@ figures/        teaser figure
 
 ## References
 
-- N.-C. Ristea, A. Anghel, M. Datcu, B. Chapron. [Guided deep learning by subaperture decomposition: ocean patterns from SAR imagery](https://arxiv.org/abs/2204.04438). arXiv:2204.04438, 2022.
-- CMOD5.N implementation from [nansencenter/openwind](https://github.com/nansencenter/openwind/blob/master/openwind/cmod5n.py) (K. F. Dagestad, NERSC).
+1. N.-C. Ristea et al. [Guided deep learning by subaperture decomposition: ocean patterns from SAR imagery](https://arxiv.org/abs/2204.04438). arXiv:2204.04438, 2022.
+2. CMOD5.N implementation from [nansencenter/openwind](https://github.com/nansencenter/openwind/blob/master/openwind/cmod5n.py) (K. F. Dagestad, NERSC).
 
 ## Author
 
