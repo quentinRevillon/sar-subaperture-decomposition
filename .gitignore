@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+# Notebooks
+.ipynb_checkpoints/
+# Data and outputs (Sentinel-1 products are downloaded separately)
+data/
+outputs/
+*.SAFE/
+*.zip
+*.tif
+*.tiff
+*.npy
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

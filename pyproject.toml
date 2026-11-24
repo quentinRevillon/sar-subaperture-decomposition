@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subaperture"
+version = "0.1.0"
+description = "Subaperture decomposition of Sentinel-1 wave-mode SLC imagettes (re-implementation of Ristea et al., 2022)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.25",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+    "tifffile>=2024.1",
+]
+
+[tool.setuptools]
+packages = ["subaperture"]
