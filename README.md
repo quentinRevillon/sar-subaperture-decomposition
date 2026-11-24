@@ -12,9 +12,10 @@ azimuth (Doppler) spectrum, i.e. a slightly different look angle, as multi-chann
 
 ## Overview
 
-- Pipeline from the paper: sigma0 calibration and CMOD5.N normalisation (10 m/s wind at 45 degrees) -> azimuth FFT
-  -> Hamming window compensation (0.75) -> 4 shifted Hamming windows (0.75) -> azimuth iFFT -> intensity
-  -> 10 x 10 mean filter -> decimation by 10.
+- Pipeline from the paper: sigma0 normalisation by a reference for a constant 10 m/s wind at 45 degrees -> azimuth
+  FFT -> Hamming window compensation (0.75) -> 4 shifted Hamming windows (0.75) -> azimuth iFFT -> intensity
+  -> 10 x 10 mean filter -> decimation by 10. The paper does not name the model function for the reference;
+  this implementation uses CMOD5.N.
 - Scope: preprocessing only. The paper's classification (ResNet-18, InceptionV3 on TenGeoP-SARwv) and unsupervised
   segmentation experiments are not reproduced here, so this repository reports no accuracy figures.
 - Written in September 2025 as a study of the paper; this is not the authors' code.
@@ -39,7 +40,7 @@ python decompose.py \
 
 | Output | Content |
 |---|---|
-| `outputs/<image-id>_subapertures.npy` | float32 array `(4, H/10, W/10)`, linear intensity, `(4, 492, 569)` for a 4918 x 5681 imagette |
+| `outputs/<image-id>_subapertures.npy` | float32 array `(4, ceil(H/10), ceil(W/10))`, linear intensity: `(4, 492, 569)` for the 4918 x 5681 example imagette |
 | `outputs/<image-id>_subapertures.png` | SSR image and the 4 subapertures in dB |
 
 Options: `--looks` (number of subapertures, default 4), `--wind-speed` (m/s, default 10), `--wind-direction`
@@ -48,11 +49,12 @@ Options: `--looks` (number of subapertures, default 4), `--wind-speed` (m/s, def
 From Python:
 
 ```python
-from decompose import normalized_slc
+from subaperture.calibration import load_normalized_slc
 from subaperture.decomposition import decompose
 
-slc = normalized_slc("data/S1C_WV_SLC__1SSV_20250907T201714_20250907T202352_004023_007FFA_3CF9.SAFE",
-                     "s1c-wv1-slc-vv-20250907t201714-20250907t201717-004023-007ffa-001", 10.0, 45.0)
+slc = load_normalized_slc("data/S1C_WV_SLC__1SSV_20250907T201714_20250907T202352_004023_007FFA_3CF9.SAFE",
+                          "s1c-wv1-slc-vv-20250907t201714-20250907t201717-004023-007ffa-001",
+                          wind_speed=10.0, wind_direction=45.0)
 looks = decompose(slc, n_looks=4)
 ```
 
@@ -60,7 +62,7 @@ looks = decompose(slc, n_looks=4)
 
 - `decompose.py`: command-line entry point, one imagette in, subaperture stack and figure out.
 - `subaperture/sentinel1.py`: reads the SLC GeoTIFF, the sigmaNought calibration LUT and the incidence angle grid of a .SAFE product.
-- `subaperture/calibration.py`: sigma0, CMOD5.N reference and normalisation of the complex SLC.
+- `subaperture/calibration.py`: sigma0, CMOD5.N reference, normalisation of the complex SLC, one-call loader from a .SAFE product.
 - `subaperture/decomposition.py`: azimuth FFT, Hamming compensation, subaperture windows, iFFT, filtering, decimation.
 - `subaperture/cmod5n.py`: CMOD5.N model function, taken from [openwind](https://github.com/nansencenter/openwind) (K. F. Dagestad, NERSC).
 - `notebooks/01_subaperture_decomposition.ipynb`: step-by-step demo with intermediate figures (spectrum before and after compensation, windows, subapertures).

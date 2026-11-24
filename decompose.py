@@ -5,7 +5,7 @@ Usage:
         --image-id s1c-wv1-slc-vv-20250907t201714-20250907t201717-004023-007ffa-001 --output-dir outputs
 
 Writes to --output-dir:
-    <image-id>_subapertures.npy  float32 array (n_looks, H // 10, W // 10), linear SSR intensity
+    <image-id>_subapertures.npy  float32 array (n_looks, ceil(H / factor), ceil(W / factor)), linear SSR intensity
     <image-id>_subapertures.png  SSR image and the subapertures, in dB
 """
 
@@ -15,18 +15,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from subaperture.calibration import cmod5n_reference, normalize_slc, to_db
+from subaperture.calibration import load_normalized_slc, to_db
 from subaperture.decomposition import decimate, decompose, mean_filter
-from subaperture.sentinel1 import product_paths, read_incidence_angle, read_sigma0_lut, read_slc
-
-
-def normalized_slc(safe_dir, image_id, wind_speed, wind_direction):
-    """Return the complex SLC of one imagette normalised by its CMOD5.N reference (|.|^2 = SSR)."""
-    paths = product_paths(safe_dir, image_id)
-    slc = read_slc(paths["measurement"])
-    lut = read_sigma0_lut(paths["calibration"], slc.shape)
-    incidence = read_incidence_angle(paths["annotation"], slc.shape)
-    return normalize_slc(slc, lut, cmod5n_reference(incidence, wind_speed, wind_direction))
 
 
 def save_figure(ssr, looks, path):
@@ -65,7 +55,7 @@ def main():
     args = parse_args()
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    slc = normalized_slc(args.safe, args.image_id, args.wind_speed, args.wind_direction)
+    slc = load_normalized_slc(args.safe, args.image_id, args.wind_speed, args.wind_direction)
     looks = decompose(slc, n_looks=args.looks, filter_size=args.filter_size, factor=args.factor)
     np.save(out_dir / f"{args.image_id}_subapertures.npy", looks.astype(np.float32))
     ssr = decimate(mean_filter(np.abs(slc) ** 2, args.filter_size), args.factor)

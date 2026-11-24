@@ -7,7 +7,7 @@ Axis 0 of every image is azimuth, axis 1 is range.
 Usage:
     from subaperture.decomposition import decompose
 
-    looks = decompose(slc_norm)                  # (4, H // 10, W // 10) intensity images
+    looks = decompose(slc_norm)                  # (4, ceil(H / 10), ceil(W / 10)) intensity images
     looks = decompose(slc_norm, n_looks=3, filter_size=5, factor=5)
 """
 
