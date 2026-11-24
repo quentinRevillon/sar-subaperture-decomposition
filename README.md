@@ -1,14 +1,12 @@
 # sar-subaperture-decomposition
 
-Re-implementation of the subaperture decomposition preprocessing of Ristea et al. (2022) for Sentinel-1 wave-mode (WV) SLC imagettes, written in September 2025 as a study of the paper. This is not the authors' code.
-
-Each complex imagette is split into 4 intensity images, each built from a quarter of the azimuth (Doppler) spectrum, as multi-channel input for ocean pattern models.
+Re-implementation (not the authors' code) of the subaperture decomposition of Ristea et al. (2022) for Sentinel-1 wave-mode (WV) SLC imagettes, written in September 2025 as a study of the paper. Each complex imagette is split into 4 intensity images, each built from a quarter of the azimuth (Doppler) spectrum.
 
 <img src="figures/teaser.png" width="100%" />
 
 *SSR image and its 4 subapertures (dB) for imagette `-001` of `S1C_WV_SLC__1SSV_20250907T201714_20250907T202352_004023_007FFA_3CF9`.*
 
-Scope is preprocessing only: the paper's classification and segmentation experiments are not reproduced, so there are no accuracy figures.
+Preprocessing only: the paper's classification and segmentation experiments are not reproduced.
 
 ## Quick start
 
